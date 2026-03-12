@@ -53,7 +53,7 @@ const Index = () => {
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 py-16 md:py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="opacity-0 animate-fade-in">
+          <div className="animate-fade-in">
             <div className="inline-flex items-center gap-2 rounded-full bg-healthcare-blue/10 px-4 py-1.5 text-sm font-medium text-healthcare-blue mb-6">
               <Heart className="h-4 w-4" />
               Trusted by 10,000+ villages
@@ -79,7 +79,7 @@ const Index = () => {
               </Link>
             </div>
           </div>
-          <div className="opacity-0 animate-fade-in-delay-2 flex justify-center">
+          <div className="animate-fade-in-delay-2 flex justify-center">
             <img
               src={heroImage}
               alt="Telemedicine connecting rural villages with doctors"
@@ -95,7 +95,7 @@ const Index = () => {
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className="bg-card rounded-xl p-6 text-center shadow-card opacity-0"
+              className="bg-card rounded-xl p-6 text-center shadow-card"
               style={{ animation: `fade-in 0.6s ease-out ${0.1 * i}s forwards` }}
             >
               <div className="text-2xl md:text-3xl font-bold text-healthcare-blue">{stat.value}</div>
@@ -119,7 +119,7 @@ const Index = () => {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className="bg-card rounded-2xl p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 opacity-0"
+              className="bg-card rounded-2xl p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
               style={{ animation: `fade-in 0.6s ease-out ${0.15 * i}s forwards` }}
             >
               <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 ${step.color}`}>

@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useApp } from "@/contexts/AppContext";
+import { supabase } from "@/lib/supabase";
+import { UserRole } from "@/lib/types";
 
 const roles = [
   { id: "patient", label: "Patient", icon: User, color: "healthcare-blue", description: "Check symptoms & consult doctors" },
@@ -23,13 +25,13 @@ const roleColorMap: Record<Role, string> = {
   admin: "border-healthcare-purple bg-healthcare-purple/5 ring-healthcare-purple",
 };
 
-const Signup = () => {
+export default function Signup() {
   const { login } = useApp();
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedRole) {
       toast.error("Please select a role to continue.");
@@ -39,6 +41,7 @@ const Signup = () => {
     const form = e.currentTarget;
     const name = (form.elements.namedItem('name') as HTMLInputElement).value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const phone = (form.elements.namedItem('phone') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
     const confirm = (form.elements.namedItem('confirm') as HTMLInputElement).value;
 
@@ -49,14 +52,53 @@ const Signup = () => {
 
     setLoading(true);
 
-    // Static Mock Sign Up
-    setTimeout(() => {
-      login(email, selectedRole, name);
-      localStorage.setItem("gramcare_last_role", selectedRole);
-      setLoading(false);
+    try {
+      // 1. Sign up with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("No user returned from signup.");
+
+      const userId = authData.user.id;
+
+      // 2. Insert into the main `users` table
+      const userPayload = {
+        id: userId,
+        role: selectedRole,
+        full_name: name,
+        phone,
+        email,
+        is_active: true,
+        created_at: new Date().toISOString()
+      };
+
+      const { error: userError } = await supabase.from('users').insert(userPayload);
+      if (userError) throw userError;
+
+      // 3. Insert into the role-specific table
+      // (Leaving other fields empty/default to be filled later via profile page)
+      if (selectedRole === 'patient') {
+        await supabase.from('patients').insert({ id: userId });
+      } else if (selectedRole === 'doctor') {
+        await supabase.from('doctors').insert({ id: userId, available: true });
+      } else if (selectedRole === 'pharmacist') {
+        await supabase.from('pharmacies').insert({ id: userId });
+      }
+
+      // 4. Update local context & navigate
+      login(userPayload);
       toast.success("Account created successfully!");
       navigate(`/${selectedRole}`);
-    }, 600);
+
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Failed to create account.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -132,6 +174,4 @@ const Signup = () => {
       </div>
     </div>
   );
-};
-
-export default Signup;
+}

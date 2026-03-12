@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import { useApp } from '@/contexts/AppContext';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { motion } from 'framer-motion';
 import { Activity, Wifi, WifiOff, AlertCircle } from 'lucide-react';
 
 // --- CONFIGURATION ---
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface PredictionResult {
   diagnosis: string;

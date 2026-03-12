@@ -27,7 +27,7 @@ export default function PatientDashboard() {
           className="mb-10"
         >
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-            {t('patient.welcome')}, {user?.name} 👋
+            {t('patient.welcome')}, {user?.full_name} 👋
           </h1>
           <p className="text-muted-foreground mt-2 text-base md:text-lg leading-relaxed">
             {t('patient.howCanWeHelp')}

@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
 import Signup from "./pages/Signup";
 import PatientDashboard from "./pages/patient/PatientDashboard";
+import PatientProfile from "./pages/patient/PatientProfile";
 import SymptomChecker from "./pages/patient/SymptomChecker";
 import BookConsultation from "./pages/patient/BookConsultation";
 import FindMedicine from "./pages/patient/FindMedicine";
@@ -47,6 +48,7 @@ function AppRoutes() {
 
       {/* Patient Routes */}
       <Route path="/patient" element={<PatientDashboard />} />
+      <Route path="/patient/profile" element={<PatientProfile />} />
       <Route path="/patient/symptoms" element={<SymptomChecker />} />
       <Route path="/patient/consultation" element={<BookConsultation />} />
       <Route path="/patient/medicine" element={<FindMedicine />} />

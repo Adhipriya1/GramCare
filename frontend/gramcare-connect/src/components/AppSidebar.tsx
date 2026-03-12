@@ -1,4 +1,5 @@
-import { useApp, UserRole } from '@/contexts/AppContext';
+import { useApp } from '@/contexts/AppContext';
+import { UserRole } from '@/lib/types';
 import { NavLink } from '@/components/NavLink';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -30,6 +31,7 @@ import {
 const menuItems: Record<UserRole, { title: string; key: string; url: string; icon: any }[]> = {
   patient: [
     { title: 'nav.dashboard', key: 'dashboard', url: '/patient', icon: LayoutDashboard },
+    { title: 'Profile', key: 'profile', url: '/patient/profile', icon: Users },
     { title: 'nav.symptomChecker', key: 'symptoms', url: '/patient/symptoms', icon: Stethoscope },
     { title: 'nav.bookConsultation', key: 'consultation', url: '/patient/consultation', icon: CalendarCheck },
     { title: 'nav.findMedicine', key: 'medicine', url: '/patient/medicine', icon: Pill },
@@ -74,7 +76,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent className="flex flex-col justify-between h-full">
         <SidebarGroup>
-          <SidebarGroupLabel>{!collapsed && user.name}</SidebarGroupLabel>
+          <SidebarGroupLabel>{!collapsed && user.full_name}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

@@ -37,7 +37,16 @@ export default function FindMedicine() {
         </div>
 
         <div className="space-y-4">
-          {mockPharmacies.map((p, i) => {
+          {mockPharmacies
+            .filter((p) => {
+              if (!search.trim()) return true;
+              const term = search.toLowerCase();
+              return (
+                p.name.toLowerCase().includes(term) ||
+                p.medicines.some((m) => m.toLowerCase().includes(term))
+              );
+            })
+            .map((p, i) => {
             const sc = statusConfig[p.status];
             return (
               <div key={i} className="card-healthcare">

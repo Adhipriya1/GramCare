@@ -5,30 +5,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useApp, UserRole } from "@/contexts/AppContext";
+import { useApp } from "@/contexts/AppContext";
+import { supabase } from "@/lib/supabase";
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
   const { login } = useApp();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate network delay for realistic UI
-    setTimeout(() => {
-      // Default to "patient" if the user hasn't signed up with a role yet
-      const role = (localStorage.getItem("gramcare_last_role") as UserRole) || "patient";
-      
-      // Call static login
-      login(email, role);
-      setLoading(false);
+
+    try {
+      console.log("-> Starting login via Supabase...");
+      // 1. Sign in with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      console.log("-> signInWithPassword complete. Data:", authData, "Error:", authError);
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("No user returned from login.");
+
+      console.log("-> Fetching User Profile from 'users' table... User ID:", authData.user.id);
+      // 2. Fetch the user's role and details from our custom `users` table
+      const { data: profile, error: profileError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+      console.log("-> Profile fetch complete. Data:", profile, "Error:", profileError);
+
+      if (profileError) throw profileError;
+      if (!profile) throw new Error("User profile not found in database.");
+
+      console.log("-> Calling login(profile) context update...");
+      // 3. Update local context & navigate
+      login(profile);
+      console.log("-> Showing toast and navigating...");
       toast.success("Logged in successfully!");
-      navigate(`/${role}`);
-    }, 500);
+      navigate(`/${profile.role}`);
+
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Failed to log in.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -79,6 +106,4 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-export default Login;
+}
