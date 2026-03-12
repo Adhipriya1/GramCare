@@ -31,21 +31,24 @@ export default function Login() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("No user returned from login.");
 
-      console.log("-> Fetching User Profile from 'users' table... User ID:", authData.user.id);
-      // 2. Fetch the user's role and details from our custom `users` table
-      const { data: profile, error: profileError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', authData.user.id)
-        .single();
-      console.log("-> Profile fetch complete. Data:", profile, "Error:", profileError);
+      console.log("-> Extracting User Profile from Auth Metadata...");
+      // 2. Extract user details directly from Auth Metadata (FAST)
+      const { role, full_name } = authData.user.user_metadata || {};
+      
+      if (!role) {
+        throw new Error("User role not found in auth metadata. Please try signing up again.");
+      }
 
-      if (profileError) throw profileError;
-      if (!profile) throw new Error("User profile not found in database.");
+      const profile = {
+        id: authData.user.id,
+        email: authData.user.email,
+        role: role,
+        full_name: full_name || 'User',
+      };
 
       console.log("-> Calling login(profile) context update...");
       // 3. Update local context & navigate
-      login(profile);
+      login(profile as any);
       console.log("-> Showing toast and navigating...");
       toast.success("Logged in successfully!");
       navigate(`/${profile.role}`);

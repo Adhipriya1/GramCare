@@ -57,6 +57,12 @@ export default function Signup() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            role: selectedRole,
+            full_name: name,
+          }
+        }
       });
 
       if (authError) throw authError;

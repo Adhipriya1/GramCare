@@ -26,15 +26,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.user) {
-        // Fetch the custom user profile from our `users` table
-        const { data: profile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (profile) {
-          setUser(profile as User);
+        const { role, full_name } = session.user.user_metadata || {};
+        if (role) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            role: role,
+            full_name: full_name || 'User',
+            is_active: true,
+            created_at: session.user.created_at,
+          });
         }
       }
       setLoading(false);
@@ -45,13 +46,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth state changes (e.g., login from another tab)
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user && !user) {
-          const { data: profile } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          if (profile) setUser(profile as User);
+        if (event === 'SIGNED_IN' && session?.user) {
+          const { role, full_name } = session.user.user_metadata || {};
+          if (role) {
+            setUser({
+              id: session.user.id,
+              email: session.user.email || '',
+              role: role,
+              full_name: full_name || 'User',
+              is_active: true,
+              created_at: session.user.created_at,
+            });
+          }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
         }
