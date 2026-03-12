@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 207 100% 98%;
+    --foreground: 210 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 30% 15%;
+
+    --primary: 210 100% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 152 55% 46%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 94%;
+    --muted-foreground: 210 15% 45%;
+
+    --accent: 207 100% 96%;
+    --accent-foreground: 210 30% 15%;
+
+    --destructive: 4 82% 56%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 25% 92%;
+    --input: 210 25% 90%;
+    --ring: 210 100% 55%;
+
+    --radius: 0.875rem;
+
+    --sidebar-background: 210 30% 99%;
+    --sidebar-foreground: 210 15% 35%;
+    --sidebar-primary: 210 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 207 100% 96%;
+    --sidebar-accent-foreground: 210 30% 15%;
+    --sidebar-border: 210 25% 93%;
+    --sidebar-ring: 210 100% 55%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --success: 152 55% 46%;
+    --success-foreground: 0 0% 100%;
+    --emergency: 4 82% 56%;
+    --emergency-foreground: 0 0% 100%;
+
+    --shadow-card: 0 1px 3px 0 hsl(210 30% 15% / 0.04), 0 4px 16px -2px hsl(210 30% 15% / 0.06);
+    --shadow-card-hover: 0 8px 30px -6px hsl(210 100% 55% / 0.18), 0 2px 8px -2px hsl(210 30% 15% / 0.06);
+    --shadow-elevated: 0 12px 40px -8px hsl(210 30% 15% / 0.12);
+
+    --gradient-hero: linear-gradient(165deg, hsl(207 100% 98%) 0%, hsl(210 100% 96%) 40%, hsl(207 100% 94%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 55%), hsl(210 100% 65%));
+  }
+
+  .dark {
+    --background: 210 30% 8%;
+    --foreground: 210 20% 92%;
+    --card: 210 25% 12%;
+    --card-foreground: 210 20% 92%;
+    --popover: 210 25% 12%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 152 55% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 18%;
+    --muted-foreground: 210 15% 60%;
+    --accent: 210 25% 16%;
+    --accent-foreground: 210 20% 92%;
+    --destructive: 4 82% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 22%;
+    --input: 210 20% 22%;
+    --ring: 210 100% 60%;
+    --sidebar-background: 210 25% 10%;
+    --sidebar-foreground: 210 15% 70%;
+    --sidebar-primary: 210 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 25% 16%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 210 20% 18%;
+    --sidebar-ring: 210 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .card-healthcare {
+    @apply bg-card rounded-2xl border border-border p-6;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-healthcare:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-3px);
+  }
+
+  .urgency-low {
+    @apply bg-success/10 text-success border-success/20;
+  }
+
+  .urgency-moderate {
+    @apply bg-warning/10 text-warning border-warning/20;
+  }
+
+  .urgency-high {
+    @apply bg-emergency/10 text-emergency border-emergency/20;
+  }
+
+  .stat-card {
+    @apply card-healthcare flex flex-col gap-2 p-5;
+  }
+
+  .feature-card {
+    @apply card-healthcare cursor-pointer flex flex-col items-center justify-center gap-4 p-8 text-center min-h-[180px] rounded-2xl;
+    backdrop-filter: blur(8px);
+  }
+
+  .feature-card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
